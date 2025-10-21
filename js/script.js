@@ -73,7 +73,7 @@ function filterByTerm(term) {
     if (t === "") {
         viewEmojis = [...sourceEmojis];
     } else {
-        viewEmojis = sourceEmojis.filter(e =>
+        viewEmojis = viewEmojis.filter(e =>
             ((e.name || "").toLowerCase().includes(t)) ||
             ((e.category || "").toLowerCase().includes(t)) ||
             ((e.description || "").toLowerCase().includes(t))
