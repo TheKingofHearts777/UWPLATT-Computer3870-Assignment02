@@ -14,6 +14,7 @@ async function loadJSON(url) {
 
 let sourceEmojis = [];
 let viewEmojis = [];
+let animationTimer = null;
 
 function renderEmojis(list) {
     const container = document.querySelector('.container');
@@ -43,16 +44,17 @@ async function loadAndRender() {
     viewEmojis = [...sourceEmojis];
     renderEmojis(viewEmojis);
 
-    // Create the category dropdown
-    const emojiCategories = [...new Set(viewEmojis.map(emoji => emoji.category))];
+    // Build category dropdown if it exists
     const categoryDropdown = document.getElementById("categories");
-
-    for (const category of emojiCategories) {
-        let newOption = document.createElement("option");
-        newOption.value = category;
-        newOption.textContent = category;
-
-        categoryDropdown.appendChild(newOption);
+    if (categoryDropdown) {
+        categoryDropdown.innerHTML = '<option value="">All Categories</option>';
+        const emojiCategories = [...new Set(viewEmojis.map(emoji => emoji.category))];
+        for (const category of emojiCategories) {
+            let newOption = document.createElement("option");
+            newOption.value = category;
+            newOption.textContent = category;
+            categoryDropdown.appendChild(newOption);
+        }
     }
 }
 
@@ -60,6 +62,7 @@ function sortByNameAsc() {
     viewEmojis = [...viewEmojis].sort((a, b) => (a.name || "").localeCompare(b.name || ""));
     renderEmojis(viewEmojis);
 }
+
 function sortByNameDesc() {
     viewEmojis = [...viewEmojis].sort((a, b) => (b.name || "").localeCompare(a.name || ""));
     renderEmojis(viewEmojis);
@@ -80,14 +83,15 @@ function filterByTerm(term) {
 }
 
 function filterByCategory(category) {
-    viewEmojis = sourceEmojis.filter(e =>
-        (e.category === category)
-    );
-    
+    if (!category || category === "") {
+        viewEmojis = [...sourceEmojis];
+    } else {
+        viewEmojis = sourceEmojis.filter(e => e.category === category);
+    }
     renderEmojis(viewEmojis);
 }
 
-document.getElementById("btnLoad")?.addEventListener("click", loadAndRender);
+// --- Button Event Listeners ---
 document.getElementById("btnAsc")?.addEventListener("click", sortByNameAsc);
 document.getElementById("btnDesc")?.addEventListener("click", sortByNameDesc);
 
@@ -96,15 +100,15 @@ document.getElementById("btnFilter")?.addEventListener("click", () => {
     filterByTerm(term);
 });
 
-document.getElementById("txtSearch")?.addEventListener(
-    "keydown", (e) => {
-        if (e.code === "Enter") {
-            filterByTerm(e.target.value)
-        }
-    }
-);
+document.getElementById("txtSearch")?.addEventListener("keydown", (e) => {
+    if (e.code === "Enter") filterByTerm(e.target.value);
+});
 
-// Spinner animation
+document.getElementById("categories")?.addEventListener("change", (e) => {
+    filterByCategory(e.target.value);
+});
+
+// --- Spinner Animation ---
 async function playSpinner() {
     document.getElementById("info").style.display = "none";
 
@@ -120,19 +124,38 @@ async function playSpinner() {
         const emojiStr = String(emoji.unicode).split("U+").join("&#x") + ";";
         span.innerHTML = emojiStr;
         span.classList.add("emoji");
+        span.style.position = "fixed";
+        span.style.top = "50%";
+        span.style.left = "50%";
+        span.style.transformOrigin = "center -90px";
         span.style.transform = `rotate(${angleStep * i}deg) translateY(-90px) rotate(-${angleStep * i}deg)`;
         spinner.appendChild(span);
     });
 
-
-    setTimeout(() => {
+    // Start 3-second animation timer
+    animationTimer = setTimeout(() => {
         spinner.classList.add("fade-out");
         setTimeout(() => {
             spinner.remove();
             document.getElementById("info").style.display = "block";
             loadAndRender();
         }, 1000);
-    }, 3000);
+    }, 1250);
 }
 
+// --- Stop spinner manually when Load Catalog is clicked ---
+document.getElementById("btnLoad")?.addEventListener("click", () => {
+    clearTimeout(animationTimer);
+    const spinner = document.getElementById("spinner");
+    if (spinner) {
+        spinner.classList.add("fade-out");
+        setTimeout(() => {
+            spinner.remove();
+            document.getElementById("info").style.display = "block";
+            loadAndRender();
+        }, 50);
+    }
+});
+
+// Run spinner on initial page load
 playSpinner();
