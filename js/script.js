@@ -83,3 +83,33 @@ document.getElementById("txtSearch")?.addEventListener(
         }
     }
 );
+
+// Spinner animation
+async function playSpinner() {
+    const spinner = document.getElementById("spinner");
+    const data = await loadJSON(DATA_URL);
+    if (!data) return;
+
+    const emojis = (Array.isArray(data) ? data : (data.emojis ?? [])).slice(0, 6);
+    const angleStep = 360 / emojis.length;
+
+    emojis.forEach((emoji, i) => {
+        const span = document.createElement("span");
+        const emojiStr = String(emoji.unicode).split("U+").join("&#x") + ";";
+        span.innerHTML = emojiStr;
+        span.classList.add("emoji");
+        span.style.transform = `rotate(${angleStep * i}deg) translateY(-90px) rotate(-${angleStep * i}deg)`;
+        spinner.appendChild(span);
+    });
+
+    setTimeout(() => {
+        spinner.classList.add("fade-out");
+        setTimeout(() => {
+            spinner.remove();
+            document.querySelector(".container").style.display = "block";
+            loadAndRender();
+        }, 1000);
+    }, 3000);
+}
+
+playSpinner();
