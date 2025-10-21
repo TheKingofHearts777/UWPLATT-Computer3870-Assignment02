@@ -70,8 +70,16 @@ function filterByTerm(term) {
 document.getElementById("btnLoad")?.addEventListener("click", loadAndRender);
 document.getElementById("btnAsc")?.addEventListener("click", sortByNameAsc);
 document.getElementById("btnDesc")?.addEventListener("click", sortByNameDesc);
+
 document.getElementById("btnFilter")?.addEventListener("click", () => {
-    const term = document.getElementById("txtSearch")?.value ?? document.getElementById("searchInput")?.value ?? "";
+    const term = document.getElementById("txtSearch")?.value ?? "";
     filterByTerm(term);
 });
-document.getElementById("searchInput")?.addEventListener("input", (e) => filterByTerm(e.target.value));
+
+document.getElementById("txtSearch")?.addEventListener(
+    "keydown", (e) => {
+        if (e.code === "Enter") {
+            filterByTerm(e.target.value)
+        }
+    }
+);
