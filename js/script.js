@@ -46,16 +46,16 @@ async function loadAndRender() {
 
     // Build category dropdown if it exists
     const categoryDropdown = document.getElementById("categories");
-
-    for (const category of emojiCategories) {
-        let newOption = document.createElement("option");
-        newOption.value = category;
-        newOption.textContent = category;
-
-        categoryDropdown.appendChild(newOption);
+    if (categoryDropdown) {
+        categoryDropdown.innerHTML = '<option value="">All Categories</option>';
+        const emojiCategories = [...new Set(viewEmojis.map(emoji => emoji.category))];
+        for (const category of emojiCategories) {
+            let newOption = document.createElement("option");
+            newOption.value = category;
+            newOption.textContent = category;
+            categoryDropdown.appendChild(newOption);
+        }
     }
-
-    categoryDropdown.value = "";
 }
 
 function sortByNameAsc() {
@@ -82,12 +82,14 @@ function filterByTerm(term) {
     renderEmojis(viewEmojis);
 }
 
-function filterByCategoryDropdown() {
-    const category = document.getElementById("categories").value;
-    console.log(category);
-    viewEmojis = sourceEmojis.filter(e =>
-        (e.category === category)
-    );
+function filterByCategory(category) {
+    if (!category || category === "") {
+        viewEmojis = [...sourceEmojis];
+    } else {
+        viewEmojis = sourceEmojis.filter(e =>
+            (e.category === category)
+        );
+    }
     
     renderEmojis(viewEmojis);
 }
@@ -95,8 +97,6 @@ function filterByCategoryDropdown() {
 // --- Button Event Listeners ---
 document.getElementById("btnAsc")?.addEventListener("click", sortByNameAsc);
 document.getElementById("btnDesc")?.addEventListener("click", sortByNameDesc);
-
-document.getElementById("categories")?.addEventListener("change", filterByCategoryDropdown)
 
 document.getElementById("btnFilter")?.addEventListener("click", () => {
     const term = document.getElementById("txtSearch")?.value ?? "";
