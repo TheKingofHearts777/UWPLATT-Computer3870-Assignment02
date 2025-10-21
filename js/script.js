@@ -54,6 +54,8 @@ async function loadAndRender() {
 
         categoryDropdown.appendChild(newOption);
     }
+
+    categoryDropdown.value = "";
 }
 
 function sortByNameAsc() {
@@ -79,7 +81,9 @@ function filterByTerm(term) {
     renderEmojis(viewEmojis);
 }
 
-function filterByCategory(category) {
+function filterByCategoryDropdown() {
+    const category = document.getElementById("categories").value;
+    console.log(category);
     viewEmojis = sourceEmojis.filter(e =>
         (e.category === category)
     );
@@ -90,6 +94,8 @@ function filterByCategory(category) {
 document.getElementById("btnLoad")?.addEventListener("click", loadAndRender);
 document.getElementById("btnAsc")?.addEventListener("click", sortByNameAsc);
 document.getElementById("btnDesc")?.addEventListener("click", sortByNameDesc);
+
+document.getElementById("categories")?.addEventListener("change", filterByCategoryDropdown)
 
 document.getElementById("btnFilter")?.addEventListener("click", () => {
     const term = document.getElementById("txtSearch")?.value ?? "";
