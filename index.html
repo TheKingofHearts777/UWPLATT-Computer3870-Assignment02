@@ -15,10 +15,6 @@
 <header>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
@@ -29,14 +25,18 @@
                     </li>
                 </ul>
             </div>
+            
+            <div class="d-flex align-items-center gap-2">
+                <button id="btnLoad" class="btn btn-outline-primary">Load Catalog</button>
+                <button id="btnAsc" class="btn btn-outline-secondary">A-Z</button>
+                <button id="btnDesc" class="btn btn-outline-secondary">Z-A</button>
+
+                <div class="input-group w-auto">
+                    <input id="txtSearch" type="text" class="form-control" placeholder="Find Title/Description...">
+                    <button id="btnFilter" class="btn btn-primary">Filter</button>
+                </div>
+            </div>
         </div justify-content-center>
-        <button id="btnLoad">Load Catalog</button>
-        <button id="btnAsc" >A-Z</button>
-        <button id="btnDesc">Z-A</button>
-        <div class="input-group w-auto">
-            <input id="txtSearch" class="form-control" type="text" placeholder="Find Description...">
-            <button id="btnFilter">Filter</button>
-        </div>
     </nav>
 </header>
 
