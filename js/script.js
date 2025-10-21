@@ -42,6 +42,18 @@ async function loadAndRender() {
     sourceEmojis = Array.isArray(data) ? data : (data.emojis ?? data.items ?? []);
     viewEmojis = [...sourceEmojis];
     renderEmojis(viewEmojis);
+
+    // Create the category dropdown
+    const emojiCategories = [...new Set(viewEmojis.map(emoji => emoji.category))];
+    const categoryDropdown = document.getElementById("categories");
+
+    for (const category of emojiCategories) {
+        let newOption = document.createElement("option");
+        newOption.value = category;
+        newOption.textContent = category;
+
+        categoryDropdown.appendChild(newOption);
+    }
 }
 
 function sortByNameAsc() {
@@ -64,6 +76,14 @@ function filterByTerm(term) {
             ((e.description || "").toLowerCase().includes(t))
         );
     }
+    renderEmojis(viewEmojis);
+}
+
+function filterByCategory(category) {
+    viewEmojis = sourceEmojis.filter(e =>
+        (e.category === category)
+    );
+    
     renderEmojis(viewEmojis);
 }
 
