@@ -106,6 +106,8 @@ document.getElementById("txtSearch")?.addEventListener(
 
 // Spinner animation
 async function playSpinner() {
+    document.getElementById("info").style.display = "none";
+
     const spinner = document.getElementById("spinner");
     const data = await loadJSON(DATA_URL);
     if (!data) return;
@@ -122,11 +124,12 @@ async function playSpinner() {
         spinner.appendChild(span);
     });
 
+
     setTimeout(() => {
         spinner.classList.add("fade-out");
         setTimeout(() => {
             spinner.remove();
-            document.querySelector(".container").style.display = "block";
+            document.getElementById("info").style.display = "block";
             loadAndRender();
         }, 1000);
     }, 3000);
