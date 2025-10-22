@@ -17,9 +17,16 @@ let viewEmojis = [];
 let animationTimer = null;
 
 function renderEmojis(list) {
-    const container = document.querySelector('.container');
+    const container = document.getElementById('emojiContainer');
     container.innerHTML = "";
+
+    let row = document.createElement("div");
+    row.className = "row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3";
+
     for (const emoji of list) {
+        const col = document.createElement("div");
+        col.className = "col";
+
         const card = document.createElement("div");
         card.className = "card mb-4 shadow-sm m-3";
 
@@ -33,8 +40,12 @@ function renderEmojis(list) {
                 <p class="card-text"><small class="text-muted">Description: ${emoji.description}</small></p>
             </div>
         `;
-        container.appendChild(card);
+
+        col.appendChild(card);
+        row.appendChild(col);
     }
+
+    container.appendChild(row);
 }
 
 async function loadAndRender() {
